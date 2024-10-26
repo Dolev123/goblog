@@ -1,7 +1,7 @@
 # Simple Go Blog
 
 A very simple (and currently ugly) blog server written in go.  
-All posts are amde out of Markdown files, currently without any html beuatification.  
+All posts are made out of Markdown files, currently without any html beuatification.  
 The server pulls all posts from a "source" location which can be one of:  
 - "directory": copy from one directory to the other.
 - "git": copy from a git repository (prefered).
@@ -24,14 +24,17 @@ go install github.com/Dolev123/goblog@latest
 Configuring is done with a JSON configuration file:
 ```json
 {
-    "addres":  "[ip]:[port]",
-    "method":  "git|directory",
-    "source":  "git://repo|/src/path/",
-    "dest":    "/path/to/server/files",
-    "secrets": "/path/to/secrets.json"
+    "address":  "[ip]:[port]",
+    "method":   "git|directory",
+    "source":   "git://repo|/src/path/",
+    "dest":     "/path/to/server/files",
+    "schedule": "@cron",
+    "secrets":  "/path/to/secrets.json"
 }
 ```
 
 The `dest` directory will be the directory for the server.  
 `source` can be either a repo address or a full path to a directory.  
-The `Dockerfile` expects to have a `config.json` when building the docker image.
+The `Dockerfile` expects to have a `config.json` when building the docker image.  
+`schedule` is based on cron schedule. for more info check out [here](https://pkg.go.dev/github.com/robfig/cron#hdr-CRON_Expression_Format)  
+

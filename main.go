@@ -1,19 +1,23 @@
 package main
 
 import (
-	"flag"
+    "flag"
 
-	"github.com/Dolev123/goblog/config"
-	"github.com/Dolev123/goblog/router"
-	"github.com/Dolev123/goblog/sync"
+    "github.com/Dolev123/goblog/config"
+    "github.com/Dolev123/goblog/router"
+    "github.com/Dolev123/goblog/sync"
+    pkglog "github.com/Dolev123/goblog/logger"
 )
 
-func main() {
-	fconf := flag.String("config", "config.json", "Path to JSON configuration file")
-	flag.Parse()
+var logger = pkglog.CreateNewLogger()
 
-	conf := config.LoadConfig(*fconf)
-	config.DebugConfig(conf)
-	sync.SyncPosts(conf)
-	router.StartServer(conf)
+func main() {
+    fconf := flag.String("config", "config.json", "Path to JSON configuration file")
+    flag.Parse()
+
+    conf := config.LoadConfig(*fconf)
+    config.DebugConfig(conf)
+    sync.SyncPosts(conf)
+    sync.StartCronSync(conf)
+    router.StartServer(conf)
 }

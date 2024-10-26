@@ -4,14 +4,18 @@ import (
     "html"
     "fmt"
     "io"
-    "log"
     "net/http"
     "strings"
     "os"
 
     "github.com/Dolev123/goblog/config"
+    pkglog "github.com/Dolev123/goblog/logger"
 )
+
+
 var gconf *config.Config
+
+var logger = pkglog.CreateNewLogger()
 
 func StartServer(conf *config.Config) {
     gconf = conf
@@ -21,9 +25,11 @@ func StartServer(conf *config.Config) {
     srv := &http.Server{
 	Addr: conf.ListenAddr,
 	Handler: mux,
+	// should make a new logger for error?
+	ErrorLog: logger,
 	// TODO:: add TLS
     }
-    log.Fatal("Server Failed with:", srv.ListenAndServe())
+    logger.Fatal("Server Failed with:", srv.ListenAndServe())
 }
 
 // GET "/{post}"
@@ -44,7 +50,7 @@ func handlePost(w http.ResponseWriter, req *http.Request) {
     _, err = io.Copy(w, freader)
     if nil != err {
 	// TODO:: check if it realy works...
-	log.Println("Failed getting content of file `%v`", fname)
+	logger.Println("Failed getting content of file `%v`", fname)
 	w.WriteHeader(http.StatusInternalServerError)
 	fmt.Fprintf(w, "Something  went wrong... :(")
 	return
@@ -55,7 +61,7 @@ func handlePost(w http.ResponseWriter, req *http.Request) {
 func handleIndex(w http.ResponseWriter, req *http.Request) {
     entries, err := os.ReadDir(gconf.Destination)
     if nil != err {
-	log.Println("Failed reading directory `%v`", entries)
+	logger.Println("Failed reading directory `%v`", entries)
 	w.WriteHeader(http.StatusInternalServerError)
 	fmt.Fprintf(w, "Something  went wrong... :(")
 	return

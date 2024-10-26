@@ -1,11 +1,13 @@
 package sync
 
 import (
-    "log"
     "os"
     "os/exec"
 
+    "github.com/robfig/cron"
+
     "github.com/Dolev123/goblog/config"
+    pkglog "github.com/Dolev123/goblog/logger"
 )
 
 /*
@@ -25,27 +27,36 @@ In the future, probably it is prefered to be:
     ...
 */
 
+var logger = pkglog.CreateNewLogger()
+
 func SyncPosts(conf *config.Config) {
     // check for destination
     if _, err := os.ReadDir(conf.Destination); nil != err {
 	if os.IsNotExist(err) {
-	    log.Println("Destination directory `%s` does not exist, creating it", conf.Destination)
+	    logger.Println("Destination directory `%s` does not exist, creating it", conf.Destination)
 	    if nil != os.MkdirAll(conf.Destination, os.ModePerm) {
-		log.Fatal("Failed creating destination directory")
+		logger.Fatal("Failed creating destination directory")
 	    }
 	}
     }
     // sync
     switch conf.Method {
     case "directory":
-	log.Println("Calling directory syncronization")
+	logger.Println("Calling directory syncronization")
 	directorySync(conf)
     case "git":
-	log.Println("Calling git syncronization")
+	logger.Println("Calling git syncronization")
 	gitSync(conf)
     default:
-	log.Fatal("Unknown method for syncronization")
+	logger.Fatal("Unknown method for syncronization")
     }
+}
+
+func StartCronSync(conf *config.Config) *cron.Cron {
+    cr := cron.New()
+    cr.AddFunc(conf.Schedule, func(){SyncPosts(conf)})
+    cr.Start()
+    return cr
 }
 
 func directorySync(conf *config.Config) {
@@ -56,10 +67,10 @@ func directorySync(conf *config.Config) {
     entries, err := os.ReadDir(src)
     if nil != err {
 	if os.IsNotExist(err) {
-	    log.Println("Source directory `%s` does not exist", src)
+	    logger.Println("Source directory `%s` does not exist", src)
 	    return
 	}
-	log.Println("Unknown error:", err)
+	logger.Println("Unknown error:", err)
 	return
     }
 
@@ -83,7 +94,8 @@ func gitSync(conf *config.Config) {
 	if exiterr, ok := err.(*exec.ExitError); ok && 0 != exiterr.ExitCode() {
 	    should_clone = true
 	} else {
-	    log.Println("Failed ")
+	    logger.Println("Failed to determine if repository exists")
+	    return
 	}
     }
 

@@ -2,36 +2,43 @@ package config
 
 import (
 	"encoding/json"
-	"log"
 	"os"
 
-	"fmt"
+	pkglog "github.com/Dolev123/goblog/logger"
 )
 
+var logger = pkglog.CreateNewLogger()
+
 type Config struct {
+    // 'IP:Port'
 	ListenAddr  string `json:"address"`
+	// either 'git' or 'directory'
 	Method      string `json:"method"`
 	Source      string `json:"source"`
 	Destination string `json:"dest"`
+	// cron syntax
+	Schedule string `json:"schedule"`
+	// '/path/to/file'
 	Secrets     string `json:"secrets"`
 }
 
 func LoadConfig(path string) *Config {
 	data, err := os.ReadFile(path)
 	if nil != err {
-		log.Fatal("could not extract configuration from `"+path+"`: ", err)
+		logger.Fatal("could not extract configuration from `"+path+"`: ", err)
 	}
 	var config *Config
 	if nil != json.Unmarshal(data, &config) {
-		log.Fatal("could not unmarshal configuration from `"+path+"`: ", err)
+		logger.Fatal("could not unmarshal configuration from `"+path+"`: ", err)
 	}
 	return config
 }
 
 func DebugConfig(conf *Config) {
-	fmt.Println("ListenAddr:", conf.ListenAddr)
-	fmt.Println("Method:", conf.Method)
-	fmt.Println("Source:", conf.Source)
-	fmt.Println("Destination:", conf.Destination)
-	fmt.Println("Secrets:", conf.Secrets)
+	logger.Println("ListenAddr:", conf.ListenAddr)
+	logger.Println("Method:", conf.Method)
+	logger.Println("Source:", conf.Source)
+	logger.Println("Destination:", conf.Destination)
+	logger.Println("Schedule:", conf.Schedule)
+	logger.Println("Secrets:", conf.Secrets)
 }
