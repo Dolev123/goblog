@@ -7,13 +7,13 @@ RUN apk add --no-cache vim git make musl-dev go
 # ?? maybe not needed ??
 
 # add and change to user
-RUN adduser -U 1001 -D user
+RUN adduser -u 1001 -D user
 WORKDIR /home/user
 USER 1001
 
 # install and build the blog server
 RUN git clone https://github.com/Dolev123/goblog.git
-WORKDIR /home/user/git-blog
+WORKDIR /home/user/goblog
 RUN go build
 
 
