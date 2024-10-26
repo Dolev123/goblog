@@ -4,7 +4,7 @@ import (
     "flag"
 
     "github.com/Dolev123/goblog/config"
-    "github.com/Dolev123/goblog/router"
+    "github.com/Dolev123/goblog/server"
     "github.com/Dolev123/goblog/sync"
     pkglog "github.com/Dolev123/goblog/logger"
 )
@@ -19,5 +19,5 @@ func main() {
     config.DebugConfig(conf)
     sync.SyncPosts(conf)
     sync.StartCronSync(conf)
-    router.StartServer(conf)
+    server.StartServer(conf)
 }
