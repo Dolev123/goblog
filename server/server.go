@@ -40,17 +40,24 @@ func handlePost(w http.ResponseWriter, req *http.Request) {
 	return
     }
     fname = gconf.Destination + fname
-    freader, err := os.Open(fname)
-    if nil != err {
+    finfo, err := os.Stat(fname)
+    if nil != err || !finfo.Mode().IsRegular() {
 	w.WriteHeader(http.StatusNotFound)
 	fmt.Fprintf(w, "No post found for %v", html.EscapeString(req.URL.Path))
 	return
     }
 
-    _, err = io.Copy(w, freader)
+    postData, err := PreparePost(fname)
     if nil != err {
 	// TODO:: check if it realy works...
-	logger.Println("Failed getting content of file `%v`", fname)
+	logger.Println("Failed getting/parsing content of file `%v`", fname)
+	w.WriteHeader(http.StatusInternalServerError)
+	fmt.Fprintf(w, "Something  went wrong... :(")
+	return
+    }
+    _, err = io.Copy(w, postData)
+    if nil != err {
+	logger.Println("Failed copying content of post: ", err)
 	w.WriteHeader(http.StatusInternalServerError)
 	fmt.Fprintf(w, "Something  went wrong... :(")
 	return
@@ -61,7 +68,7 @@ func handlePost(w http.ResponseWriter, req *http.Request) {
 func handleIndex(w http.ResponseWriter, req *http.Request) {
     entries, err := os.ReadDir(gconf.Destination)
     if nil != err {
-	logger.Println("Failed reading directory `%v`", entries)
+	logger.Println("Failed reading directory ", entries)
 	w.WriteHeader(http.StatusInternalServerError)
 	fmt.Fprintf(w, "Something  went wrong... :(")
 	return
