@@ -1,0 +1,7 @@
+{
+    "addres":  "[ip]:[port]",
+    "method":  "git|directory",
+    "source":  "git://repo|/src/path/",
+    "dest":    "/path/to/server/files",
+    "secrets": "/path/to/secrets.json"
+}

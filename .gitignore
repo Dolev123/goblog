@@ -1,0 +1,5 @@
+src/
+dst/
+*.json
+**/*.json
+!example/config.json
