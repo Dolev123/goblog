@@ -50,7 +50,7 @@ func handlePost(w http.ResponseWriter, req *http.Request) {
     postData, err := PreparePost(fname)
     if nil != err {
 	// TODO:: check if it realy works...
-	logger.Println("Failed getting/parsing content of file `%v`", fname)
+	logger.Println("Failed getting/parsing content of file:", fname)
 	w.WriteHeader(http.StatusInternalServerError)
 	fmt.Fprintf(w, "Something  went wrong... :(")
 	return

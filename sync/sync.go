@@ -33,7 +33,7 @@ func SyncPosts(conf *config.Config) {
     // check for destination
     if _, err := os.ReadDir(conf.Destination); nil != err {
 	if os.IsNotExist(err) {
-	    logger.Println("Destination directory `%s` does not exist, creating it", conf.Destination)
+	    logger.Println("Destination directory `" + conf.Destination + "` does not exist, creating it")
 	    if nil != os.MkdirAll(conf.Destination, os.ModePerm) {
 		logger.Fatal("Failed creating destination directory")
 	    }
@@ -67,10 +67,10 @@ func directorySync(conf *config.Config) {
     entries, err := os.ReadDir(src)
     if nil != err {
 	if os.IsNotExist(err) {
-	    logger.Println("Source directory `%s` does not exist", src)
+	    logger.Println("Source directory does not exist:", src)
 	    return
 	}
-	logger.Println("Unknown error:", err)
+	logger.Println("Unknown error while reading src directory:", err)
 	return
     }
 
@@ -91,6 +91,7 @@ func gitSync(conf *config.Config) {
     // check if already cloned repository
     cmd := exec.Command("git", "-C", dst, "rev-parse", "--is-inside-work-tree")
     if err := cmd.Run(); nil != err {
+	logger.Println(":DEBUG:", err)
 	if exiterr, ok := err.(*exec.ExitError); ok && 0 != exiterr.ExitCode() {
 	    should_clone = true
 	} else {
@@ -100,9 +101,13 @@ func gitSync(conf *config.Config) {
     }
 
     if should_clone {
+	logger.Println("Cloning git repo")
 	cmd = exec.Command("git", "-C", dst, "clone", repo,  ".")
     } else {
+	logger.Println("Updateing (pull) git repo")
 	cmd = exec.Command("git", "-C", dst, "pull", "origin")
     }
-    cmd.Run()
+    if err := cmd.Run(); nil != err {
+	logger.Println("Failed to run git command:", err) 
+    }
 }
