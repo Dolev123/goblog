@@ -30,3 +30,14 @@ func PreparePost(path string) (*bytes.Buffer, error) {
     return &parsed, nil
 
 }
+
+// TODO::
+// build post from a directory with:
+// <directory_name> : post name CamelCase
+// - info.json : contains all relevant metadata (writer, created, updated)
+// - post.md : the post itself
+// - rsrc_<> : resource files (images, giffs, videos)
+
+// TODO::
+// load all posts, and update list every sync
+// use channels and goroutines for updating from `sync.go`

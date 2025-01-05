@@ -10,7 +10,7 @@ import (
 var logger = pkglog.CreateNewLogger()
 
 type Config struct {
-    // 'IP:Port'
+	// 'IP:Port'
 	ListenAddr  string `json:"address"`
 	// either 'git' or 'directory'
 	Method      string `json:"method"`
@@ -20,6 +20,8 @@ type Config struct {
 	Schedule string `json:"schedule"`
 	// '/path/to/file'
 	Secrets     string `json:"secrets"`
+	// either 'bare' or 'full'
+	Structure string `json:"structure,omitempty"`
 }
 
 func LoadConfig(path string) *Config {
@@ -41,4 +43,5 @@ func DebugConfig(conf *Config) {
 	logger.Println("Destination:", conf.Destination)
 	logger.Println("Schedule:", conf.Schedule)
 	logger.Println("Secrets:", conf.Secrets)
+	logger.Println("Structure:", conf.Structure)
 }
