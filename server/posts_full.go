@@ -18,6 +18,10 @@ type Post struct {
     data *bytes.Buffer
 }
 
+func (p *Post) Data() *bytes.Buffer {
+    return p.data
+}
+
 type PostMetadata struct {
     Writer string `json:"writer"`
     Created types.Time `json:"created"`
@@ -54,7 +58,8 @@ func ConvertTitleToPath(title string) string {
 }
 
 func LoadAndRenderPost(metadata *PostMetadata) (*Post, error) {
-    raw, err := os.ReadFile(metadata.Path)
+    path := filepath.Join(metadata.Path, ConvertTitleToPath(metadata.Title))
+    raw, err := os.ReadFile(path)
     if nil != err {
 	return nil, err
     }

@@ -20,8 +20,18 @@ var logger = pkglog.CreateNewLogger()
 func StartServer(conf *config.Config) {
     gconf = conf
     mux := http.NewServeMux()
-    mux.HandleFunc("GET /", handleIndex)
-    mux.HandleFunc("GET /{post}", handlePost)
+    switch gconf.Structure {
+    case "bare": 
+        mux.HandleFunc("GET /", handleIndexBare)
+	mux.HandleFunc("GET /{post}", handlePostBare)
+    case "full":
+	logger.Fatal("full mode not yet implemented!")
+        mux.HandleFunc("GET /", handleIndexFull)
+	mux.HandleFunc("GET /{post}", handlePostFull)
+    default:
+	logger.Fatal("Unknown server mode/structure:", gconf.Structure)
+    }
+    logger.Println("setting server in", gconf.Structure, "mode")
     srv := &http.Server{
 	Addr: conf.ListenAddr,
 	Handler: mux,
@@ -33,7 +43,7 @@ func StartServer(conf *config.Config) {
 }
 
 // GET "/{post}"
-func handlePost(w http.ResponseWriter, req *http.Request) {
+func handlePostBare(w http.ResponseWriter, req *http.Request) {
     fname := req.PathValue("post")
     if !strings.HasSuffix(fname, ".md") {
 	http.Redirect(w, req, "/", http.StatusFound)
@@ -65,7 +75,7 @@ func handlePost(w http.ResponseWriter, req *http.Request) {
 }
 
 // GET "/"
-func handleIndex(w http.ResponseWriter, req *http.Request) {
+func handleIndexBare(w http.ResponseWriter, req *http.Request) {
     entries, err := os.ReadDir(gconf.Destination)
     if nil != err {
 	logger.Println("Failed reading directory ", entries)
@@ -79,4 +89,14 @@ func handleIndex(w http.ResponseWriter, req *http.Request) {
 	    fmt.Fprintf(w, "<a href='%v'>%v<a></br>", fname, fname)
 	}
     }
+}
+
+
+// GET "/"
+func handleIndexFull(w http.ResponseWriter, req *http.Request) {
+    logger.Fatal("Not Implemented!")
+}
+// GET "/{post}"
+func handlePostFull(w http.ResponseWriter, req *http.Request) {
+    logger.Fatal("Not Implemented!")
 }
