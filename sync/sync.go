@@ -29,7 +29,7 @@ In the future, probably it is prefered to be:
 
 var logger = pkglog.CreateNewLogger()
 
-func SyncPosts(conf *config.Config) {
+func SyncPosts(conf *config.Config, syncChans []chan bool) {
     // check for destination
     if _, err := os.ReadDir(conf.Destination); nil != err {
 	if os.IsNotExist(err) {
@@ -48,13 +48,19 @@ func SyncPosts(conf *config.Config) {
 	logger.Println("Calling git syncronization")
 	gitSync(conf)
     default:
-	logger.Fatal("Unknown method for syncronization")
+	logger.Fatal("Unknown method for syncronization. Aborting...")
+    }
+    // update all related sync channels
+    logger.Println("Sending update signals")
+    for i, ch := range syncChans {
+	logger.Println("sending to channel indexed:", i)
+	go func(){ch <- true}()
     }
 }
 
-func StartCronSync(conf *config.Config) *cron.Cron {
+func StartCronSync(conf *config.Config, syncChans []chan bool) *cron.Cron {
     cr := cron.New()
-    cr.AddFunc(conf.Schedule, func(){SyncPosts(conf)})
+    cr.AddFunc(conf.Schedule, func(){SyncPosts(conf, syncChans)})
     cr.Start()
     return cr
 }

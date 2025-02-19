@@ -5,7 +5,9 @@ import (
     "bytes"
 
     "github.com/yuin/goldmark"
+    "github.com/yuin/goldmark/extension"
     highlighting "github.com/yuin/goldmark-highlighting/v2"
+    "go.abhg.dev/goldmark/mermaid"
 )
 
 func PreparePost(path string) (*bytes.Buffer, error) {
@@ -20,6 +22,8 @@ func PreparePost(path string) (*bytes.Buffer, error) {
 	    highlighting.NewHighlighting(
 		highlighting.WithStyle("dracula"),
 	    ),
+	    &mermaid.Extender{},
+	    extension.Footnote,
 	),
     )
     var parsed bytes.Buffer

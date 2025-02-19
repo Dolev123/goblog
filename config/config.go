@@ -22,6 +22,7 @@ type Config struct {
 	Secrets     string `json:"secrets"`
 	// either 'bare' or 'full'
 	Structure string `json:"structure,omitempty"`
+	BlogTitle string `json:"title"`
 }
 
 func LoadConfig(path string) *Config {
@@ -44,4 +45,5 @@ func DebugConfig(conf *Config) {
 	logger.Println("Schedule:", conf.Schedule)
 	logger.Println("Secrets:", conf.Secrets)
 	logger.Println("Structure:", conf.Structure)
+	logger.Println("BlogTitle:", conf.Structure)
 }

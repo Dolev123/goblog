@@ -70,7 +70,7 @@ func TestLoadAndRenderPost(t *testing.T) {
     if err != nil {
 	t.Fatal("Failed to load metadata:", err.Error())
     }
-    post, err := server.LoadAndRenderPost(metadata)
+    post, err := server.LoadAndRenderPostData(metadata)
     if err != nil {
 	t.Fatal("Failed to load/render post:", err.Error())
     }

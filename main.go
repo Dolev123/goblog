@@ -15,9 +15,13 @@ func main() {
     fconf := flag.String("config", "config.json", "Path to JSON configuration file")
     flag.Parse()
 
+    serverSyncChan := make(chan bool)
+    var syncChannles []chan bool
+    syncChannles = append(syncChannles, serverSyncChan)
+
     conf := config.LoadConfig(*fconf)
     config.DebugConfig(conf)
-    sync.SyncPosts(conf)
-    sync.StartCronSync(conf)
-    server.StartServer(conf)
+    sync.SyncPosts(conf, nil) 
+    sync.StartCronSync(conf, syncChannles)
+    server.StartServer(conf, serverSyncChan)
 }
