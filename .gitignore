@@ -4,6 +4,6 @@ dst/
 **/*.json
 # example json files
 !example/**/config.json
-!example/**/metdata.json
+!example/**/metadata.json
 # The binary
 goblog
