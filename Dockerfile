@@ -20,7 +20,7 @@ RUN go build
 # setup the site
 RUN mkdir /home/user/site 
 RUN cp goblog /home/user/site
-WORKDIR home/user/site
+WORKDIR /home/user/site
 COPY ./config.json config.json
 #COPY ./secrets.json ./.secrets.json
 
