@@ -1,9 +1,10 @@
 {
-    "address":  "[ip]:[port]",
-    "method":   "git|directory",
-    "source":   "git://repo|/src/path/",
-    "dest":     "/path/to/server/files",
-    "schedule": "@cron",
-    "secrets":  "/path/to/secrets.json",
-    "title":    "Example Blog Title"
+    "address":   "[ip]:[port]",
+    "method":    "git|directory",
+    "source":    "git://repo|/src/path/",
+    "dest":      "/path/to/server/files",
+    "schedule":  "@cron",
+    "secrets":   "/path/to/secrets.json",
+    "structure": "bare|full",
+    "title":     "Example Blog Title"
 }

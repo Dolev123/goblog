@@ -1,5 +1,5 @@
 {
-    "address":  "0.0.0.0:9080",
+    "address":  "0.0.0.0:8080",
     "method":   "directory",
     "source":   "/src/path/",
     "dest":     ".",
