@@ -177,8 +177,7 @@ func WritePreviewsToResponse(w http.ResponseWriter) error {
 
 
 func WritePostToResponse(postID int, w http.ResponseWriter) error {
-    if len(postsMetadata) <=  postID {
-	// TODO:: replace with custom error
+    if len(postsMetadata) <=  postID || postID < 0 {
 	return errors.New(fmt.Sprintf("No Post Available for ID: %v", postID))
     }
     post, err := LoadAndRenderPostData(postsMetadata[postID])

@@ -85,7 +85,6 @@ func handlePostBare(w http.ResponseWriter, req *http.Request) {
 
     postData, err := PreparePost(fname)
     if nil != err {
-	// TODO:: check if it realy works...
 	logger.Println("Failed getting/parsing content of file:", fname)
 	w.WriteHeader(http.StatusInternalServerError)
 	fmt.Fprintf(w, "Something  went wrong... :(")
@@ -129,19 +128,15 @@ func handlePostFull(w http.ResponseWriter, req *http.Request) {
 	return
     }
 
-    postID, err := strconv.Atoi(req.PathValue("post"))
-    if err != nil {
-	// TODO:: differentiate 404/400/502 based on error
-	logger.Println("Failed to parse post ID:", err)
-	w.WriteHeader(http.StatusNotFound)
+    postID := determinePostID(req.PathValue("post"), w)
+    if postID < 0 {
 	return
     }
 
-    err = WritePostToResponse(postID, w)
+    err := WritePostToResponse(postID, w)
     if nil != err {
-	// TODO:: differentiate 404/400/502 based on error
 	logger.Println("Failed to write post to response:", err)
-	w.WriteHeader(http.StatusNotFound)
+	w.WriteHeader(http.StatusInternalServerError)
 	return
     }
 }
@@ -153,16 +148,8 @@ func handlePostResourceFull(w http.ResponseWriter, req *http.Request) {
 	return
     }
 
-    // TODO:: split to another function
-    postID, err := strconv.Atoi(req.PathValue("post"))
-    if err != nil {
-	// TODO:: differentiate 404/400/502 based on error
-	logger.Println("Failed to parse post ID:", err)
-	w.WriteHeader(http.StatusNotFound)
-	return
-    }
-    if len(postsMetadata) <= postID {
-	w.WriteHeader(http.StatusNotFound)
+    postID := determinePostID(req.PathValue("post"), w)
+    if postID < 0 {
 	return
     }
 
@@ -189,7 +176,6 @@ func handlePostResourceFull(w http.ResponseWriter, req *http.Request) {
 
     resourceData, err := os.ReadFile(fname)
     if nil != err {
-	// TODO:: check if it realy works...
 	logger.Println("Failed getting content of resource file:", fname)
 	w.WriteHeader(http.StatusInternalServerError)
 	fmt.Fprintf(w, "Something  went wrong... :(")
@@ -209,7 +195,7 @@ func handlePostResourceFull(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "image/jpeg")
 	w.Header().Set("Content-Length", strconv.Itoa(int(size)))
     default:
-	w.WriteHeader(http.StatusNotFound)
+	w.WriteHeader(http.StatusBadRequest)
 	logger.Println("Not Implemented! (2)", ftype)
     }
 
@@ -235,7 +221,6 @@ func handleResourcesFull(w http.ResponseWriter, req *http.Request) {
 
     resourceData, err := os.ReadFile(fname)
     if nil != err {
-	// TODO:: check if it realy works...
 	logger.Println("Failed getting content of resource file:", fname)
 	w.WriteHeader(http.StatusInternalServerError)
 	fmt.Fprintf(w, "Something  went wrong... :(")
@@ -250,3 +235,16 @@ func handleResourcesFull(w http.ResponseWriter, req *http.Request) {
     }
 }
 
+func determinePostID(reqId string, w http.ResponseWriter) int {
+    id, err := strconv.Atoi(reqId)
+    if err != nil {
+	logger.Println("Failed to parse post ID:", err)
+	w.WriteHeader(http.StatusBadRequest)
+	return -1
+    }
+    if id < 0 || id >= len(postsMetadata) {
+	w.WriteHeader(http.StatusNotFound)
+	return -1
+    }
+    return id
+}

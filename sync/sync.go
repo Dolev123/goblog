@@ -83,8 +83,11 @@ func directorySync(conf *config.Config) {
     for _, entry := range entries {
 	fname := entry.Name()
 	cmd := exec.Command("cp", "-r", src+fname, dst+fname)
-	cmd.Run()
-	// TODO:: add log / goncurrency?
+	if err = cmd.Run(); err != nil {
+	    logger.Println("Failed to copy file", src+fname, "with error:", err)
+	}
+
+	// TODO:: goncurrency?
     }
 }
 
