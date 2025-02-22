@@ -14,7 +14,6 @@ import (
     "github.com/yuin/goldmark"
     "github.com/yuin/goldmark/extension"
     highlighting "github.com/yuin/goldmark-highlighting/v2"
-    images "github.com/mdigger/goldmark-images"
     "go.abhg.dev/goldmark/mermaid"
 
     "github.com/Dolev123/goblog/types"
@@ -143,15 +142,14 @@ func LoadAndRenderPostData(metadata *PostMetadata) (*Post, error) {
     }
     
     mdRenderer := goldmark.New(
-	images.NewReplacer(func (src string) string {
-	    return src
-	}),
+	NewPostImageOption(metadata.ID()),
 	goldmark.WithExtensions(
 	    highlighting.NewHighlighting(
 		highlighting.WithStyle("dracula"),
 	    ),
 	    &mermaid.Extender{},
 	    extension.Footnote,
+	    extension.TaskList,
 	),
     )
     var parsed bytes.Buffer
