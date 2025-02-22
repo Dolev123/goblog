@@ -2,7 +2,7 @@
     "address":  "0.0.0.0:8080",
     "method":   "directory",
     "source":   "/src/path/",
-    "dest":     ".",
+    "dest":     "./",
     "schedule": "@every 2m",
     "secrets":  "/path/to/secrets.json",
     "title":    "Example Blog Title",
