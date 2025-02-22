@@ -2,4 +2,8 @@ src/
 dst/
 *.json
 **/*.json
-!example/config.json
+# example json files
+!example/**/config.json
+!example/**/metdata.json
+# The binary
+goblog

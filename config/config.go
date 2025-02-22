@@ -45,5 +45,5 @@ func DebugConfig(conf *Config) {
 	logger.Println("Schedule:", conf.Schedule)
 	logger.Println("Secrets:", conf.Secrets)
 	logger.Println("Structure:", conf.Structure)
-	logger.Println("BlogTitle:", conf.Structure)
+	logger.Println("BlogTitle:", conf.BlogTitle)
 }
