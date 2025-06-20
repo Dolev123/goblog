@@ -1,9 +1,9 @@
 package test
 
 import (
+    "path/filepath"
     "strings"
     "testing"
-    "path/filepath"
     "time"
 
     "github.com/Dolev123/goblog/server"
@@ -14,39 +14,39 @@ func TestExamplePostMetadata(t *testing.T) {
     exampleMetadataDirPath := filepath.Join("..", "example")
     metadata, err := server.LoadPostMetada(exampleMetadataDirPath)
     if err != nil {
-	t.Fatal(err.Error())
+    	t.Fatal(err.Error())
     }
     t.Logf("Metadata: %v", metadata)
     if metadata.Writer != "ME" {
-	t.Error("writer", metadata.Writer)
+    	t.Error("writer", metadata.Writer)
     }
     want_created := types.Time{time.Date(2024, 12, 17, 01, 14, 00, 00, time.UTC)}
-    if metadata.Created !=  want_created {
-        t.Error("created", metadata.Created)
+    if metadata.Created != want_created {
+    	t.Error("created", metadata.Created)
     }
     want_updated := types.Time{time.Date(2025, 01, 18, 02, 15, 01, 00, time.UTC)}
     if metadata.Updated != want_updated {
-        t.Error("updated", metadata.Updated)
+    	t.Error("updated", metadata.Updated)
     }
     if metadata.Title != "Test Post" {
-	t.Error("title", metadata.Title)
+    	t.Error("title", metadata.Title)
     }
     if metadata.Path != exampleMetadataDirPath {
-	t.Error("path", metadata.Path)
+    	t.Error("path", metadata.Path)
     }
-    
+
 }
 
 func TestConvertTitleToPath(t *testing.T) {
     const correct = "test_title.md"
     tests := []string{
-	"test_title", "Test Title", " Test Title", "\tTest\tTitle\t", "TEST TITLE",
+    	"test_title", "Test Title", " Test Title", "\tTest\tTitle\t", "TEST TITLE",
     }
     for _, test := range tests {
-	path := server.ConvertTitleToPath(test) 
-	if correct != path {
-	    t.Error("got:", path, "instead of:", correct)
-	}
+    	path := server.ConvertTitleToPath(test)
+    	if correct != path {
+    		t.Error("got:", path, "instead of:", correct)
+    	}
     }
 }
 
@@ -68,15 +68,15 @@ func TestLoadAndRenderPost(t *testing.T) {
     exampleMetadataDirPath := filepath.Join("..", "example")
     metadata, err := server.LoadPostMetada(exampleMetadataDirPath)
     if err != nil {
-	t.Fatal("Failed to load metadata:", err.Error())
+    	t.Fatal("Failed to load metadata:", err.Error())
     }
     post, err := server.LoadAndRenderPostData(metadata)
     if err != nil {
-	t.Fatal("Failed to load/render post:", err.Error())
+    	t.Fatal("Failed to load/render post:", err.Error())
     }
     data := post.Data().String()
     if correct != data {
-	t.Logf("Compare(data, correct): %v", strings.Compare(data, correct))
-	t.Error("Incorrect Data:", data)
+    	t.Logf("Compare(data, correct): %v", strings.Compare(data, correct))
+    	t.Error("Incorrect Data:", data)
     }
 }

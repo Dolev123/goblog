@@ -14,7 +14,7 @@ const TimeFormat = `"2006-01-02 15:04:05"`
 func (t *Time) UnmarshalJSON(b []byte) error {
     date, err := time.Parse(TimeFormat, string(b))
     if err != nil {
-	return err
+    	return err
     }
     t.Time = date
     return nil

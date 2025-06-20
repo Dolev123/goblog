@@ -65,9 +65,18 @@ This section applies only to full mode/structure.
 The html is set up using golang's builtin `html/template`. If you want to change them, you can, and have some parameters to access:
 - `{{.ID}}` - calculated post ID
 - `{{.Created}}` and `{{.Updated}}` - dates from metadata
-- `{{.Author}} - author from metadata
+- `{{.Author}}` - author from metadata
 - `{{.Title}}` - title from metadata
 - `{{.Content}}` - the html generated from the markdown.
 - `{{.BlogTitle}}` - title from metadata
 
 The values may be accessed a bit differently, based on file's location, and expects exactly the files listed under resources.
+
+## Formating the code
+
+Since golang has it's own builtin standart formatiing tools, I do use it, but change the tabs to 4 spaces, because I like it more.  
+For thise interested, here is the command:
+```sh
+find . -regex '.*.go$' -exec go fmt {} \; -exec sed -i -e 's/\t/    /' {} \;
+# for each go file, run 'go fmt' and then 'sed'.
+```
